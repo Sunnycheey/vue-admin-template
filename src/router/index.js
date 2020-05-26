@@ -51,28 +51,50 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '主页', icon: 'dashboard' }
     }]
   },
 
   {
-    path: '/example',
+    path: '/return',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/return/',
+    name: 'return',
+    meta: { title: '退货', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'push',
+        name: 'Push',
+        component: () => import('@/views/push/index'),
+        meta: { title: '入库', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'check',
+        name: 'Check',
+        component: () => import('@/views/check/index'),
+        meta: { title: '确认', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/insert',
+    component: Layout,
+    redirect: '/insert/',
+    name: 'insert',
+    meta: { title: '导入', icon: 'excel' },
+    children: [
+      {
+        path: 'insert-record',
+        name: 'InsertRecord',
+        component: () => import('@/views/excel/upload-excel'),
+        meta: { title: '插入记录', icon: 'documentation' }
+      },
+      {
+        path: 'insert-user',
+        name: 'InsertUser',
+        component: () => import('@/views/check/index'),
+        meta: { title: '插入用户', icon: 'documentation' }
       }
     ]
   },
@@ -85,7 +107,7 @@ export const constantRoutes = [
         path: 'index',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: '表格', icon: 'form' }
       }
     ]
   },
@@ -144,17 +166,6 @@ export const constantRoutes = [
         path: 'menu2',
         component: () => import('@/views/nested/menu2/index'),
         meta: { title: 'menu2' }
-      }
-    ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
       }
     ]
   },
