@@ -20,3 +20,11 @@ export function getCustomersByName(name) {
     method: 'get'
   })
 }
+
+export function getCustomersById(id) {
+  return request({
+    url: `/customers/item-id/${id}`,
+    method: 'get'
+  })
+
+}
