@@ -48,18 +48,18 @@
     :before-close="handleInnerClose">
     <span>用户信息</span>
     <div style="margin: 20px"></div>
-    <el-form label-position="left" label-width="80px" :model="user">
+    <el-form label-position="left" label-width="80px" :model="customer">
       <el-form-item label="用户姓名">
-        <el-input v-model="user.realName"></el-input>
+        <el-input v-model="customer.realName"></el-input>
       </el-form-item>
       <el-form-item label="用户号码">
-        <el-input v-model="user.phoneNumber"></el-input>
+        <el-input v-model="customer.phoneNumber"></el-input>
       </el-form-item>
       <el-form-item label="用户框号">
-        <el-input v-model="user.positionalNumber"></el-input>
+        <el-input v-model="customer.positionalNumber"></el-input>
       </el-form-item>
       <el-form-item label="用户地址">
-        <el-input v-model="user.address"></el-input>
+        <el-input v-model="customer.address"></el-input>
       </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -79,8 +79,8 @@
     data() {
       return {
         id: '',
-        dialogVisible: true,
-        user: {
+        dialogVisible: false,
+        customer: {
           address: '',
           phoneNumber: '',
           realName: '',
@@ -90,7 +90,6 @@
           name: '',
           realName: '',
         },
-        customer: {},
         // label, value
         customers: [],
         value: '',
@@ -102,12 +101,26 @@
       fetchSingleCustomer: function(id) {
         getItem(id).then(response => {
           this.item = response.data
-          this.mapper.name = this.item.customerName;
-          getCustomersByName(this.mapper.name).then(response => {
+          this.mapper.name = this.item.customerName
+          // promise链式调用
+          return this.mapper.name}).then(name => {
+          getCustomersByName(name).then(response => {
             if(!response.data) {
               this.dialogVisible = true;
               console.log('dialog visible is : ' + this.dialogVisible)
               this.fetchCustomers();
+              return null
+            } else {
+              return response.data;
+            }
+          }).then(data => {
+            if(data === null) {
+              // do nothing
+            } else {
+              this.$message({
+                type: "success",
+                message: `地址：${data.address}，名字：${data.realName}，框号：${data.positionalNumber}`
+              })
             }
           })
         })
@@ -124,14 +137,15 @@
           }
         })
       },
+
       setNull: function(user) {
         for(const prop in user) {
           user[prop] = ''
         }
       },
-      onSubmit: function() {
-        this.fetchSingleCustomer(this.id)
-        // 新数据注入到this.user中
+      onSubmit: async function() {
+        await this.fetchSingleCustomer(this.id)
+        console.log(this.customer)
       },
       onCancel: function () {
         // clear the input
@@ -140,6 +154,10 @@
       onFormCancel: function() {
         this.setNull(this.user)
         this.dialogVisible = false;
+      },
+      onInnerFormCancel: function() {
+        this.setNull(this.user)
+        this.innerDialogVisible = false;
       },
       handleClose: function() {
         this.dialogVisible = false;
@@ -152,17 +170,15 @@
         this.dialogVisible = true;
       },
       onDialogConfirm: function() {
-        let customerMapper = {name: this.user.name, realName: this.user.realName}
-        setMapper(customerMapper).then(response => {
+        setMapper(this.mapper).then(response => {
           console.log(response)
         })
-        let customer = {realName: this.user.realName, address: this.user.address, phoneNumber: this.user.phoneNumber,
-        positionalNumber: this.user.positionalNumber}
-        if(customer.realName === "基础用户") {
-          customer.realName = this.user.name;
-        }
-        console.log(customer)
-        setCustomers(customer).then(response => {
+        this.dialogVisible = false;
+      },
+      onInnerDialogConfirm: function () {
+        setCustomers(this.customer).then(response => {
+          this.fetchCustomers();
+          this.innerDialogVisible = false;
           console.log(response)
         })
       }
