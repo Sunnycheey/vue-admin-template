@@ -36,6 +36,10 @@
       handleSuccess({ results, header }) {
         this.tableData = results
         this.tableHeader = header
+        this.$message({
+          type: "success",
+          message: "OK"
+        })
       }
     }
   }

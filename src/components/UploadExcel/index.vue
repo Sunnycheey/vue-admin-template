@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
+    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls, .csv" @change="handleClick">
     <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
       Drop excel file here or
       <el-button :loading="loading" style="margin-left:16px;" size="mini" type="primary" @click="handleUpload">
@@ -12,6 +12,7 @@
 
 <script>
   import XLSX from 'xlsx'
+  import {setFile} from '@/api/file.js'
 
   export default {
     props: {
@@ -63,12 +64,16 @@
       handleClick(e) {
         const files = e.target.files
         const rawFile = files[0] // only use files[0]
+        console.log(rawFile)
         if (!rawFile) return
         this.upload(rawFile)
       },
       upload(rawFile) {
         this.$refs['excel-upload-input'].value = null // fix can't select the same excel
-
+        setFile(rawFile).then(response => {
+          console.log(response)
+        })
+        console.log('upload file!')
         if (!this.beforeUpload) {
           this.readerData(rawFile)
           return
