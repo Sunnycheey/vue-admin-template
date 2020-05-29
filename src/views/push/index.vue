@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-input v-model="id" placeholder="请输入单号"></el-input>
+    <el-input v-model="id" placeholder="请输入单号" @keyup.enter.native="onSubmit"></el-input>
     <div style="margin-top: 20px;"></div>
     <el-button type="primary" @click="onSubmit">查询</el-button>
     <el-button @click="onCancel">取消</el-button>
@@ -11,7 +11,7 @@
       :before-close="handleClose">
       <span>录入匹配信息</span>
       <div style="margin: 20px"></div>
-      <el-form label-position="left" label-width="80px" :model="mapper">
+      <el-form label-position="left" label-width="80px" :model="mapper" @keyup.native.enter="onDialogConfirm">
         <el-row :gutter="20">
           <el-col :span="10">
             <el-form-item label="用户姓名">
@@ -49,9 +49,26 @@
     <span>用户信息</span>
     <div style="margin: 20px"></div>
     <el-form label-position="left" label-width="80px" :model="customer">
-      <el-form-item label="用户姓名">
-        <el-input v-model="customer.realName"></el-input>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="10">
+          <el-form-item label="用户姓名">
+            <el-input v-model="customer.realName"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="特殊用户">
+            <el-select v-model="customer.specialCustomer" filterable>
+              <el-option
+                v-for="item in optionItems"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-form-item label="用户号码">
         <el-input v-model="customer.phoneNumber"></el-input>
       </el-form-item>
@@ -59,7 +76,7 @@
         <el-input v-model="customer.positionalNumber"></el-input>
       </el-form-item>
       <el-form-item label="用户地址">
-        <el-input v-model="customer.address"></el-input>
+        <el-input v-model="customer.address" @keyup.enter.native="onInnerDialogConfirm"></el-input>
       </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -84,7 +101,8 @@
           address: '',
           phoneNumber: '',
           realName: '',
-          positionalNumber: ''
+          positionalNumber: '',
+          specialCustomer: false,
         },
         mapper: {
           name: '',
@@ -94,7 +112,17 @@
         customers: [],
         value: '',
         item: {},
-        innerDialogVisible: false
+        innerDialogVisible: false,
+        optionItems: [
+          {
+            label: '是',
+            value: true
+          },
+          {
+            label: '否',
+            value: false
+          }
+        ],
       }
     },
     methods: {
@@ -156,7 +184,7 @@
         this.dialogVisible = false;
       },
       onInnerFormCancel: function() {
-        this.setNull(this.user)
+        this.setNull(this.customer)
         this.innerDialogVisible = false;
       },
       handleClose: function() {
@@ -172,7 +200,12 @@
       onDialogConfirm: function() {
         setMapper(this.mapper).then(response => {
           console.log(response)
-        })
+        }).then(
+          this.$message({
+            type: "success",
+            message: "OK!"
+          })
+        )
         this.dialogVisible = false;
       },
       onInnerDialogConfirm: function () {

@@ -100,14 +100,17 @@ export const constantRoutes = [
   },
 
   {
-    path: '/form',
+    path: '/search',
     component: Layout,
+    redirect: '/search/',
+    name: 'search',
+    meta: { title: '查询', icon: 'search' },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: '表格', icon: 'form' }
+        path: 'search-return',
+        name: 'SearchReturn',
+        component: () => import('@/views/search/index'),
+        meta: { title: '退订查询' }
       }
     ]
   },

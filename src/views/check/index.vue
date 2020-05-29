@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-input v-model="id" placeholder="请输入单号"></el-input>
+    <el-input v-model="id" placeholder="请输入单号" @keyup.enter.native="onSubmit"></el-input>
     <div style="margin-top: 20px;"></div>
     <el-button type="primary" @click="onSubmit">退货</el-button>
     <el-button @click="onCancel">取消</el-button>
