@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <h3> 用户信息查询（根据单号）</h3>
     <el-input v-model="id" placeholder="请输入单号" @keyup.enter.native="onSubmit"></el-input>
     <div style="margin-top: 20px;"></div>
     <el-button type="primary" @click="onSubmit">查询</el-button>
@@ -91,7 +92,6 @@
   import {getCustomers, setCustomers, getCustomersByName} from "@/api/customer";
   import {getItem} from "@/api/item";
   import {setMapper} from "@/api/mapper";
-
   export default {
     data() {
       return {
@@ -131,7 +131,10 @@
           this.item = response.data
           this.mapper.name = this.item.customerName
           // promise链式调用
-          return this.mapper.name}).then(name => {
+          return this.mapper.name
+        }, reject => {
+          return Promise.reject(reject)
+        }).then(name => {
           getCustomersByName(name).then(response => {
             if(!response.data) {
               this.dialogVisible = true;
@@ -139,9 +142,10 @@
               this.fetchCustomers();
               return null
             } else {
-              return response.data;
+              return response;
             }
-          }).then(data => {
+          }).then(response => {
+            const data = response.data;
             if(data === null) {
               // do nothing
             } else {
@@ -149,13 +153,13 @@
                 type: "success",
                 message: `地址：${data.address}，名字：${data.realName}，框号：${data.positionalNumber}`
               })
+              // 播报音频
             }
           })
         })
       },
       fetchCustomers: function() {
         getCustomers().then(response => {
-          console.log(response.data)
           for(const data of response.data) {
             console.log(data)
             let tmp = {label: data.realName, value: data.realName}
@@ -177,7 +181,7 @@
       },
       onCancel: function () {
         // clear the input
-        this.input = ''
+        this.id = ''
       },
       onFormCancel: function() {
         this.setNull(this.user)

@@ -70,10 +70,19 @@
       },
       upload(rawFile) {
         this.$refs['excel-upload-input'].value = null // fix can't select the same excel
+        this.loading = true
         setFile(rawFile).then(response => {
           console.log(response)
+          this.$message({
+            type: "success",
+            message: "OK!"
+          })
+          this.loading = false;
+        }, ()=> {
+          this.loading = false;
         })
         console.log('upload file!')
+        /*
         if (!this.beforeUpload) {
           this.readerData(rawFile)
           return
@@ -82,6 +91,7 @@
         if (before) {
           this.readerData(rawFile)
         }
+        */
       },
       readerData(rawFile) {
         this.loading = true

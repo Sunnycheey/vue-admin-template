@@ -114,6 +114,21 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/edit',
+    component: Layout,
+    redirect: '/edit/',
+    name: 'edit',
+    meta: { title: '编辑', icon: 'edit' },
+    children: [
+      {
+        path: 'edit-user',
+        name: 'EditUser',
+        component: () => import('@/views/edit/index'),
+        meta: { title: '编辑用户' }
+      }
+    ]
+  },
 
   {
     path: '/nested',

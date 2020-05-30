@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <h3> 退订确认 </h3>
     <el-input v-model="id" placeholder="请输入单号" @keyup.enter.native="onSubmit"></el-input>
     <div style="margin-top: 20px;"></div>
     <el-button type="primary" @click="onSubmit">退货</el-button>
@@ -24,10 +25,12 @@
         }).then(data => {
           let returns = {id: this.id, realName: data.realName}
           setReturns(returns).then(response => {
-            this.$message({
-              type: "success",
-              message: "ok!"
-            })
+            if(response.code === 20000) {
+              this.$message({
+                type: "success",
+                message: "ok!"
+              })
+            }
           })
         })
       },
